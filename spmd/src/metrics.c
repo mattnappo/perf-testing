@@ -25,7 +25,7 @@ struct timespec time_kernel(vec_kernel_t kern,
 }
 
 // Benchmark a kernel on random vectors.
-void bench_kernel(vec_kernel_t kern, char *label, bench_config_t conf)
+void _bench_kernel(vec_kernel_t kern, vec_kernel_t check, char *label, bench_config_t conf)
 {
     float *a, *b, *c;
     int *len = conf.sizes;
@@ -39,9 +39,7 @@ void bench_kernel(vec_kernel_t kern, char *label, bench_config_t conf)
         c = vec_rand(*len);
 
         float avg = 0.0;
-
         for (int i = 0; i < conf.iters; i++) {
-            // TODO: pick up average
             struct timespec t = time_kernel(kern, NULL, a, b, c, *len);
             if (t.tv_sec > 0) {
                 fprintf(stderr, "add was too slow (> 1s)");
@@ -49,7 +47,7 @@ void bench_kernel(vec_kernel_t kern, char *label, bench_config_t conf)
             }
             avg += (float) t.tv_nsec;
 
-            vec_check_add(a, b, c, *len);
+            check(a, b, c, *len);
         }
         avg /= (float) conf.iters;
         printf("avg: %f ns\n", avg);
