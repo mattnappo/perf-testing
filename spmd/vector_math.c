@@ -15,6 +15,8 @@ void vec_add_naive(float *a, float *b, float *c, int len)
     }
 }
 
+// TODO: alignment
+// Precondition: (len % 8) == 0
 void vec_add_avx(float *a, float *b, float *c, int len)
 {
 #ifndef __AVX__
@@ -22,16 +24,17 @@ void vec_add_avx(float *a, float *b, float *c, int len)
     exit(1);
 #endif
 
-    assert(len == 8); // TODO: for now
+    // fits 8 SP floats
+    __m256 av, bv, cv;
 
-    // can fit 8 floats
-    __m256 av = _mm256_set_ps(a[7], a[6], a[5], a[4],
-                              a[3], a[2], a[1], a[0]);
-    __m256 bv = _mm256_set_ps(b[7], b[6], b[5], b[4],
-                              b[3], b[2], b[1], b[0]);
-    // __m256 cv = _mm256_set1_ps(0.0);
-    __m256 cv = _mm256_add_ps(av, bv);
-    _mm256_storeu_ps(c, cv);
+    for (int s = 0; s < len; s += 8) {
+        av = _mm256_set_ps(a[s+7], a[s+6], a[s+5], a[s+4],
+                                  a[s+3], a[s+2], a[s+1], a[s]);
+        bv = _mm256_set_ps(b[s+7], b[s+6], b[s+5], b[s+4],
+                                  b[s+3], b[s+2], b[s+1], b[s]);
+        cv = _mm256_add_ps(av, bv);
+        _mm256_storeu_ps(c+s, cv);
+    }
 }
 
 void vec_check_add(float *a, float *b, float *c, int len)

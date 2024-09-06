@@ -81,7 +81,7 @@ void test_4()
 
 void test_5()
 {
-    int sizes[] = {8, 16, 0};
+    int sizes[] = {8, 16, 32, 64, 1024, 4096, 16384, 0};
     bench_config_t conf = {
         .iters = 10000,
         .sizes = sizes
