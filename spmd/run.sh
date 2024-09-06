@@ -2,7 +2,7 @@
 
 # bash > make
 
-flags="-Wall -g3 -O0"
+flags="-Wall -g3 -O0 -mavx"
 target="spmd"
 nprocs=4
 

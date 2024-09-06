@@ -68,11 +68,35 @@ void test_3()
     bench_config_free(conf);
 }
 
+void test_4()
+{
+    int len = 16;
+    float *a = vec_rand(len);
+    float *b = vec_rand(len);
+    float *c = vec_zeros(len);
+    vec_add_avx(a, b, c, len);
+    vec_check_add(a, b, c, len);
+    vec_free(a, b, c, NULL);
+}
+
+void test_5()
+{
+    int sizes[] = {8, 16, 0};
+    bench_config_t conf = {
+        .iters = 10000,
+        .sizes = sizes
+    };
+    bench_kernel(vec_add_naive, "naive", conf);
+    bench_kernel(vec_add_avx,   "avx", conf);
+}
+
 int main(int argc, char **argv)
 {
-    // test_1();
-    // test_2();
-    test_3();
+    //test_1();
+    //test_2();
+    //test_3();
+    //test_4();
+    test_5();
 
     return 0;
 }

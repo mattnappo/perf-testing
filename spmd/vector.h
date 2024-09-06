@@ -34,6 +34,7 @@ void bench_config_free(bench_config_t conf);
 /*** Vector math ***/ 
 
 void vec_add_naive(float *a, float *b, float *c, int len);
+void vec_add_avx(float *a, float *b, float *c, int len);
 
 /*** Verification ***/
 
