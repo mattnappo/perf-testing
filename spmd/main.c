@@ -4,7 +4,6 @@
 
 #include "log.h"
 #include "vector.h"
-#include "metrics.h"
 
 #define LOG_LEVEL LOG_LEVEL_DEBUG
 
@@ -43,17 +42,11 @@ void test_1()
     vec_display(b, n);
     vec_display(c, n);
 
-    // run_with_procs(a, b, c);
-
-
-    vec_free(a, b, c, 0);
+    vec_free(a, b, c, NULL);
 }
 
 void test_2()
 {
-    int num_procs = get_num_procs();
-    LOG_DEBUG("running with num_procs=%d\n", num_procs);
-
     int n = 16;
     float *a = vec_fill(2, n);
     float *b = vec_fill(3, n);
@@ -62,16 +55,24 @@ void test_2()
     vec_display(b, n);
     vec_display(c, n);
 
-    timeit3(vec_add_naive, "vec_add_naive", a, b, c, n);
+    time_kernel(vec_add_naive, "vec_add_naive", a, b, c, n);
     vec_display(c, n);
 
-    vec_free(a, b, c, 0);
+    vec_free(a, b, c, NULL);
+}
+
+void test_3()
+{
+    bench_config_t conf = default_bench_config();
+    bench_kernel(vec_add_naive, "vec_add_naive", conf);
+    bench_config_free(conf);
 }
 
 int main(int argc, char **argv)
 {
     // test_1();
-    test_2();
+    // test_2();
+    test_3();
 
     return 0;
 }
