@@ -33,3 +33,6 @@ clean:
 	rm -f vgcore.*
 	rmdir bin/
 
+.PHONY: format
+format:
+	clang-format --style=llvm -i --files src/*.c include/*.h
